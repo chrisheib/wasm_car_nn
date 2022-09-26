@@ -1,0 +1,14 @@
+{
+  "name": "wasm-car-dl",
+  "collaborators": [
+    "STSchiff <chrisheib@gmx.de>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "wasm_car_dl_bg.wasm",
+    "wasm_car_dl.js",
+    "wasm_car_dl.d.ts"
+  ],
+  "browser": "wasm_car_dl.js",
+  "types": "wasm_car_dl.d.ts"
+}

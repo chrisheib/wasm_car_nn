@@ -8,7 +8,7 @@ const carCtx = carCanvas.getContext("2d");
 
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
-const N = 100;
+const N = 200;
 const cars = generateCars(N);
 let bestCar = cars[0];
 if (localStorage.getItem("bestBrain")) {
@@ -110,15 +110,15 @@ function run_main() {
 }
 
 function animate(time) {
-    for (let i = 0; i < traffic.length; i++) {
-        traffic[i].update(road.borders, []);
+    for (let i in traffic) {
+        traffic[i].update(road.borders, [], true);
     }
-    for (let i = 0; i < cars.length; i++) {
-        cars[i].update(road.borders, traffic);
+    for (let i in cars) {
+        cars[i].update(road.borders, traffic, (cars[i] == bestCar || cars[i].number == 0));
     }
     let min_distance = Math.min(...cars.map(c => c.y - traffic[traffic.length - 1].y))
 
-    let bestCar = cars.find(c => c.y - traffic[traffic.length - 1].y == min_distance);
+    bestCar = cars.find(c => c.y - traffic[traffic.length - 1].y == min_distance);
 
     if (min_distance < best_distance) {
         if (old_select != bestCar.number) {

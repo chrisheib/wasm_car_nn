@@ -20,7 +20,7 @@ class Car {
             this.sensor = new Sensor(this);
             this.brain = new NeuralNetwork(
                 // [this.sensor.rayCount, 20, 20, 4]
-                [this.sensor.rayCount, 10, 10, 4]
+                [this.sensor.rayCount, 100, 100, 100, 4]
             );
         }
         this.controls = new Controls(controlType);
@@ -43,8 +43,10 @@ class Car {
         }
     }
 
-    update(roadBorders, traffic) {
+    update(roadBorders, traffic, show) {
+        this.show = true
         if (!this.damaged) {
+            this.show = show
             this.#move();
             this.polygon = this.#createPolygon();
             this.damaged = this.#assessDamage(roadBorders, traffic);
@@ -56,8 +58,8 @@ class Car {
             );
 
             if (this.useBrain) {
-                const outputs = NeuralNetwork.feedForward(offsets, this.brain);
-                // const outputs = feed_forward_car_no(Number(this.number), offsets);
+                // const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+                const outputs = feed_forward_car_no(Number(this.number), offsets);
                 this.controls.forward = outputs[0];
                 this.controls.left = outputs[1];
                 this.controls.right = outputs[2];
@@ -144,30 +146,31 @@ class Car {
     }
 
     draw(ctx, drawSensor = false) {
-        if (this.sensor && drawSensor) {
-            this.sensor.draw(ctx);
-        }
+        if (this.show) {
+            if (this.sensor && drawSensor) {
+                this.sensor.draw(ctx);
+            }
 
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(-this.angle);
-        if (!this.damaged) {
-            ctx.drawImage(this.mask,
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(-this.angle);
+            if (!this.damaged) {
+                ctx.drawImage(this.mask,
+                    -this.width / 2,
+                    -this.height / 2,
+                    this.width,
+                    this.height);
+                ctx.globalCompositeOperation = "multiply";
+            }
+            ctx.drawImage(this.img,
                 -this.width / 2,
                 -this.height / 2,
                 this.width,
                 this.height);
-            ctx.globalCompositeOperation = "multiply";
+
+            ctx.fillText(this.number.toString(), this.width / 2, this.height / 2)
+
+            ctx.restore();
         }
-        ctx.drawImage(this.img,
-            -this.width / 2,
-            -this.height / 2,
-            this.width,
-            this.height);
-
-        ctx.fillText(this.number.toString(), this.width / 2, this.height / 2)
-
-        ctx.restore();
-
     }
 }
