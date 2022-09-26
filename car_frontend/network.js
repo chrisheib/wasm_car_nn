@@ -1,0 +1,110 @@
+class NeuralNetwork {
+    constructor(neuronCounts) {
+        this.levels = [];
+        for (let i = 0; i < neuronCounts.length - 1; i++) {
+            this.levels.push(new Level(
+                neuronCounts[i], neuronCounts[i + 1], i == (neuronCounts.length - 2)
+            ));
+        }
+    }
+
+    static feedForward(givenInputs, network) {
+        let outputs = Level.feedForward(
+            givenInputs, network.levels[0]);
+        for (let i = 1; i < network.levels.length; i++) {
+            outputs = Level.feedForward(
+                outputs, network.levels[i]);
+        }
+        return outputs;
+    }
+
+    static mutateAll(network, amount = 1) {
+        network.levels.forEach(level => {
+            for (let b in level.biases) {
+                level.biases[b] += (Math.random() * 2.0 - 1.0) * amount
+            }
+            for (let w of level.weights) {
+                for (let j in w) {
+                    w[j] += (Math.random() * 2.0 - 1.0) * amount
+                }
+            }
+        });
+    }
+
+    static mutatePoints(network, amount = 1) {
+        network.levels.forEach(level => {
+            for (let b in level.biases) {
+                if (Math.random() < amount)
+                    level.biases[b] = (Math.random() * 2.0 - 1.0)
+
+            }
+            for (let w of level.weights) {
+                for (let j in w) {
+                    if (Math.random() < amount)
+                        w[j] = (Math.random() * 2.0 - 1.0)
+                }
+            }
+        });
+    }
+}
+
+class Level {
+    constructor(inputCount, outputCount, lastLevel) {
+        this.inputs = new Array(inputCount);
+        this.outputs = new Array(outputCount);
+        this.biases = new Array(outputCount);
+        this.lastLevel = lastLevel
+
+        this.weights = [];
+        for (let i = 0; i < inputCount; i++) {
+            this.weights[i] = new Array(outputCount);
+        }
+
+        Level.#randomize(this);
+    }
+
+    static #randomize(level) {
+        for (let i = 0; i < level.inputs.length; i++) {
+            for (let j = 0; j < level.outputs.length; j++) {
+                level.weights[i][j] = Math.random() * 2 - 1;
+            }
+        }
+
+        for (let i = 0; i < level.biases.length; i++) {
+            level.biases[i] = Math.random() * 2 - 1;
+        }
+    }
+
+    static feedForward(givenInputs, level) {
+        for (let i = 0; i < level.inputs.length; i++) {
+            level.inputs[i] = givenInputs[i];
+        }
+
+        for (let i = 0; i < level.outputs.length; i++) {
+            let sum = 0
+            for (let j = 0; j < level.inputs.length; j++) {
+                sum += level.inputs[j] * level.weights[j][i];
+            }
+
+            if (level.lastLevel) {
+                // Sigmoid
+                let value = 1.0 / (1.0 + Math.exp(-(sum + level.biases[i])))
+
+                if (value > 0.5) {
+                    level.outputs[i] = 1;
+                } else {
+                    level.outputs[i] = 0;
+                }
+            }
+            else {
+                // Sigmoid
+                // level.outputs[i] = 1.0 / (1.0 + Math.pow(Math.E, -(sum + level.biases[i])))
+
+                // ReLU
+                level.outputs[i] = Math.max(0.0, sum + level.biases[i])
+            }
+        }
+
+        return level.outputs;
+    }
+}

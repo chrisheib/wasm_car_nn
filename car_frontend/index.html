@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<head>
+    <title>Self-driving car - No libraries</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script src='/pkg/wasm_car_dl.js'></script>
+    <script>
+      const {set_inputs, add_car, feed_forward_car_no, init_hook, test_send_array, test_send_struct, test_send_array_array} = wasm_bindgen;
+
+    //   window.add_car = add_car
+    //   window.feed_forward_car_no = feed_forward_car_no
+    //   window.init_hook = init_hook
+    //   window.test_send_array = test_send_array
+    //   window.test_send_struct = test_send_struct
+    //   window.test_send_array_array = test_send_array_array
+
+      async function run() {
+        await wasm_bindgen('/pkg/wasm_car_dl_bg.wasm');
+        // await init();
+        init_hook()
+        test_send_array([10.0, 20.0, 30.0])
+        test_send_struct({name: "Hi!", arrrrs: [[10.0, 20.0, 30.0], [11.0, 22.0, 30.0], [10.5, 20.01]] })
+        test_send_array_array([[10.0, 20.0, 30.0], [11.0, 22.0, 30.0], [10.5, 20.01]])
+
+        // let brain = {levels: new Array(3)}
+        // brain.levels[0] = {
+        //     outputs: 2,
+        //     weights: [[1,2],[2,3]],
+        //     biases: [1,2],
+        //     last_level: false
+        // }
+        // brain.levels[1] = {
+        //     outputs: 2,
+        //     weights: [[1,2],[2,3]],
+        //     biases: [1,2],
+        //     last_level: false
+        // }
+        // brain.levels[2] = {
+        //     outputs: 4,
+        //     weights: [[1,2,3,5],[2,3,4,5]],
+        //     biases: [1,2,3,4],
+        //     last_level: true
+        // }
+
+        // add_car(0, brain)
+        // console.log(feed_forward_car_no(0, [1,1]))
+
+        run_main()
+        // greet()
+      }
+
+      run();
+    </script>
+    <canvas id="carCanvas"></canvas>
+    <div class="vertical" id="verticalButtons">
+        <button onclick="save()">💾</button>
+        <button onclick="discard()">🗑️</button>
+        <input type="number" name="car" id="car_select">
+        <textarea name="car_list" id="car_list" rows="40"></textarea>
+        <div id="best_car"></div>
+    </div>
+    <!-- <canvas id="networkCanvas"></canvas> -->
+    <div class="vertical">
+        <textarea name="hall_of_fame" id="hall_of_fame" rows="40"></textarea>
+    </div>
+    <!-- <script src="visualizer.js"></script> -->
+    <script src="network.js" defer></script>
+    <script src="sensor.js" defer></script>
+    <script src="utils.js" defer></script>
+    <script src="road.js" defer></script>
+    <script src="controls.js" defer></script>
+    <script src="car.js" defer></script>
+    <script src="main.js" defer></script>
+</body>
+</html>
