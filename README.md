@@ -17,6 +17,11 @@
   <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
 </div>
 
+# Infos:
+
+- Kompilieren mit wasm-pack build --target no-modules
+- zum starten die mit VSCode live server hosten und auf http://127.0.0.1:5500/car_frontend/index.html gehen
+
 ## About
 
 [**📚 Read this template tutorial! 📚**][template-docs]
